@@ -1,4 +1,4 @@
-﻿namespace BPSTests
+﻿namespace Domain.Models
 {
     public class CurrencyPairInfo
     {

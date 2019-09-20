@@ -1,4 +1,6 @@
-﻿namespace BPSTests.Requests.GetCourses.BPS
+﻿using Common.Extensions;
+
+namespace Adapters.Bps
 {
     public class CardlessRequest : IRequest
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BPSTests
+namespace Domain.Models
 {
     public class DomainBankCoursesDto
     {

@@ -2,11 +2,18 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Adapters\Clients\Bps\Adapters.Bps\Adapters.Bps.csproj" />
+    <ProjectReference Include="..\Adapters\Clients\Idea\Adapters.Idea\Adapters.Idea.csproj" />
+    <ProjectReference Include="..\Adapters\Common\Adapters.Common\Adapters.Common.csproj" />
+    <ProjectReference Include="..\Domain\Models\Domain.Models\Domain.Models.csproj" />
   </ItemGroup>
 
 </Project>

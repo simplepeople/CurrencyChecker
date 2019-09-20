@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Common.Extensions;
 
-namespace BPSTests.Requests.GetCourses.BPS
+namespace Adapters.Bps
 {
     public class CardlessResponse : IResponse<CardlessRequest>
     {

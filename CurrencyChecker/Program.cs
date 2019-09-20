@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using BPSTests.Requests.GetCourses;
-using BPSTests.Requests.GetCourses.BPS;
+using Adapters.Bps;
+using Adapters.Common;
+using Adapters.Idea;
+using Domain.Models;
 
-namespace BPSTests
+
+namespace CurrencyChecker
 {
     public class Program
     {
@@ -14,9 +16,10 @@ namespace BPSTests
 
         public static async Task Main(string[] args)
         {
-            var banksCourses = new ICourseGetter[]
+            var banksCourses = new IBankAdapter[]
             {
-                new BPSCourseGetter()
+                new BpsBankAdapter(),
+                new IdeaBankAdapter()
             };
 
             var getCoursesTasks = banksCourses.Select(x => x.GetBankCourses()).ToList();
