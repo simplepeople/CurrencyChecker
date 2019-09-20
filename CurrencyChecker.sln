@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bps", "Bps", "{039D7BCC-7AB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Idea", "Idea", "{5FC8951D-D54D-4147-8152-946E01505172}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapters.Bps", "Adapters\Clients\Bps\Adapters.Bps\Adapters.Bps.csproj", "{D11FCDEB-8E45-47A8-8880-FD0834711D2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapters.Clients.Bps", "Adapters\Clients\Bps\Adapters.Bps\Adapters.Clients.Bps.csproj", "{D11FCDEB-8E45-47A8-8880-FD0834711D2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapters.Idea", "Adapters\Clients\Idea\Adapters.Idea\Adapters.Idea.csproj", "{506CA648-55DA-4942-A2A4-4E7A64995F88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapters.Clients.Idea", "Adapters\Clients\Idea\Adapters.Idea\Adapters.Clients.Idea.csproj", "{506CA648-55DA-4942-A2A4-4E7A64995F88}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adapters.Common", "Adapters\Common\Adapters.Common\Adapters.Common.csproj", "{17C53D33-1696-4B69-A867-FA224AA90D1D}"
 EndProject

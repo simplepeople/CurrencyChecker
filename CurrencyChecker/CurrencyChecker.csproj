@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Adapters\Clients\Bps\Adapters.Bps\Adapters.Bps.csproj" />
-    <ProjectReference Include="..\Adapters\Clients\Idea\Adapters.Idea\Adapters.Idea.csproj" />
+    <ProjectReference Include="..\Adapters\Clients\Bps\Adapters.Bps\Adapters.Clients.Bps.csproj" />
+    <ProjectReference Include="..\Adapters\Clients\Idea\Adapters.Idea\Adapters.Clients.Idea.csproj" />
     <ProjectReference Include="..\Adapters\Common\Adapters.Common\Adapters.Common.csproj" />
     <ProjectReference Include="..\Domain\Models\Domain.Models\Domain.Models.csproj" />
   </ItemGroup>

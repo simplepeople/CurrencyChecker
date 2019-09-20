@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common.Extensions;
 
-namespace Adapters.Bps
+namespace Adapters.Clients.Bps
 {
     public class CardlessResponse : IResponse<CardlessRequest>
     {

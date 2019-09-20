@@ -6,7 +6,7 @@ using Adapters.Common;
 using Common.Extensions;
 using Domain.Models;
 
-namespace Adapters.Bps
+namespace Adapters.Clients.Bps
 {
     public class BpsBankAdapter : BankAdapter
     {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Adapters.Common;
 using Domain.Models;
 
-namespace Adapters.Idea
+namespace Adapters.Clients.Idea
 {
     public class IdeaBankAdapter : BankAdapter
     {

@@ -1,6 +1,6 @@
 ﻿using Common.Extensions;
 
-namespace Adapters.Bps
+namespace Adapters.Clients.Bps
 {
     public class CardlessRequest : IRequest
     {

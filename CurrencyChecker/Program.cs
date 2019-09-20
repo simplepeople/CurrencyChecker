@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Adapters.Bps;
+using Adapters.Clients.Bps;
+using Adapters.Clients.Idea;
 using Adapters.Common;
-using Adapters.Idea;
 using Domain.Models;
 
 
