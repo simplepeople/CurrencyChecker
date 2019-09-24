@@ -1,31 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Adapters.Common;
 using Common.Extensions;
 using Domain.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Adapters.Clients.Idea
 {
     public class IdeaBankAdapter : BankAdapter
     {
-        private static readonly HttpClient _client = new HttpClient();
+        private static readonly HttpClient _client;
+
+        static IdeaBankAdapter()
+        {
+            _client = new HttpClient();
+            _client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+        }
 
         public override async Task<DomainBankCoursesDto> GetBankCourses()
         {
-            var date = new DateTime().Date.ToString("dd-MM-yyyy");
-            string url = $"https://www.ideabank.by/private-osoby/online-bank/vigoniy-kurs/?date={date}&id=70";
-            var request = new VigodniyCursRequest();
+            string url = "https://www.ideabank.by/o-banke/kursy-valyut/";
+            var date = DateTime.Now;
+            var request = new VigodniyCursRequest
+            {
+                Date = date.Date.ToString("dd-MM-yyyy"),
+                Id = 70
+            };
             var response = await _client.PostAsJsonAsync<VigodniyCursRequest, VigodniyCursResponse>(url, request);
-            return ConvertRawCourses(response);
+            return ConvertRawCourses(date, response);
         }
 
-        private DomainBankCoursesDto ConvertRawCourses(VigodniyCursResponse response)
+        private DomainBankCoursesDto ConvertRawCourses(DateTime date, VigodniyCursResponse response)
         {
-            throw new NotImplementedException();
+            //todo
+            return new DomainBankCoursesDto
+            {
+                
+                Bank = BankName,
+                //BankCourseTime = date.Add(response.data.rates.Rates.Select(x=>x.CourseTime).OrderByDescending(x=>x).First()),
+                //RequestTime = date,
+                //CurrencyPairInfos = response.data.rates.RateList .RateList.Select(x=>new CurrencyPairInfo
+                //{
+                //    BuyCourse = x.buy,
+                //    SellCourse = x.sell,
+                //    XCurrency = x.Currency
+                //}).ToList()
+            };
         }
 
         public override string BankName { get; } = "IdeaBank";
+    }
+
+    public class VigodniyCursRequest : IRequest
+    {
+        [QueryParam("date")]
+        public string Date { get; set; }
+
+        [QueryParam("id")]
+        public int Id { get; set; }
     }
 
     public class VigodniyCursResponse : IResponse<VigodniyCursRequest>
@@ -34,32 +70,86 @@ namespace Adapters.Clients.Idea
 
         public class Data
         {
-            public Ratesnb ratesnb { get; set; }
-            public Rates rates { get; set; }
+            [JsonProperty("rates")]
+            public Times times { get; set; }
         }
 
-        public class Ratesnb
+
+        [JsonConverter(typeof(IdeaTimesConverter))]
+        public class Times
         {
-            public string _1USD { get; set; }
-            public string _1EUR { get; set; }
-            public string _100RUB { get; set; }
-            public string _10PLN { get; set; }
+            public List<Time> TimeList { get; set; }
         }
 
-        public class Rates
+        public class Time
         {
-            //todo
-            //public _164500 _164500 { get; set; }
-            //public _112000 _112000 { get; set; }
+            public TimeSpan CourseTime { get; set; }
+            public List<Currency> CurrencyList { get; set; }
         }
 
-        /*
-         * {"data":{"ratesnb":{"1 USD":"2.0523","1 EUR":"2.2685","100 RUB":"3.1986","10 PLN":"5.2270"},"rates":{"16:45:00":{"1 USD":{"1":{"Value":"2.0400","Currency":"USD","Units":"1","Operation":"1"},"2":{"Value":"2.0520","Currency":"USD","Units":"1","Operation":"2"}},"1 EUR":{"1":{"Value":"2.2430","Currency":"EUR","Units":"1","Operation":"1"},"2":{"Value":"2.2590","Currency":"EUR","Units":"1","Operation":"2"}}},"11:20:00":{"1 USD":{"1":{"Value":"2.0370","Currency":"USD","Units":"1","Operation":"1"},"2":{"Value":"2.0470","Currency":"USD","Units":"1","Operation":"2"}},"1 EUR":{"1":{"Value":"2.2510","Currency":"EUR","Units":"1","Operation":"1"},"2":{"Value":"2.2620","Currency":"EUR","Units":"1","Operation":"2"}}}}}}
-*/
-
+        public class Currency
+        {
+            public List<Rate> RateList { get; set; }
+        }
     }
 
-    public class VigodniyCursRequest : IRequest
+    public class Rate
     {
+        public string Currency { get; set; }
+
+        public float Value { get; set; }
+
+        public Operation Operation { get; set; }
+
+        public int Units { get; set; }
+    }
+
+    public enum Operation
+    {
+        Buy = 0,
+        Sell = 1
+    }
+
+
+    public class IdeaTimesConverter :JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var times = JObject.Load(reader).Properties();
+            return new VigodniyCursResponse.Times
+            {
+                TimeList = times.Select(time => new VigodniyCursResponse.Time
+                {
+                    CourseTime = TimeSpan.Parse(time.Name),
+                    CurrencyList = ((JObject) time.Value).Properties().Select(currency =>
+                    {
+                        var rateList = ((JObject) currency.Value).Properties();
+                        return new VigodniyCursResponse.Currency
+                        {
+                            RateList = rateList.Select(rate =>
+                            {
+                                var r = (JObject) rate.Value;
+                                return new Rate
+                                {
+                                    Value = r["Value"].Value<float>(),
+                                    Currency = r["Currency"].Value<string>(),
+                                    Operation = (Operation)r["Operation"].Value<int>(),
+                                    Units = r["Units"].Value<int>()
+
+                                };
+                            }).ToList()
+                        };
+                    }).ToList()
+                }).ToList()
+            };
+        }
+
+        //stub
+        public override bool CanConvert(Type objectType) => throw new NotImplementedException();
     }
 }

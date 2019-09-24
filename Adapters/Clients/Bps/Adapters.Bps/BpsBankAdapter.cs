@@ -10,7 +10,12 @@ namespace Adapters.Clients.Bps
 {
     public class BpsBankAdapter : BankAdapter
     {
-        private static readonly HttpClient _client = new HttpClient();
+        private static readonly HttpClient _client;
+
+        static BpsBankAdapter()
+        {
+            _client = new HttpClient();
+        }
 
         public override string BankName { get; } = "BPS Sberbank";
 
