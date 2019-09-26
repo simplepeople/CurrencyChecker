@@ -36,19 +36,23 @@ namespace Adapters.Clients.Idea
 
         private DomainBankCoursesDto ConvertRawCourses(DateTime date, VigodniyCursResponse response)
         {
-            //todo
+            var time = response.data.times.TimeList.OrderByDescending(x => x.CourseTime).First();
             return new DomainBankCoursesDto
             {
-                
                 Bank = BankName,
-                //BankCourseTime = date.Add(response.data.rates.Rates.Select(x=>x.CourseTime).OrderByDescending(x=>x).First()),
-                //RequestTime = date,
-                //CurrencyPairInfos = response.data.rates.RateList .RateList.Select(x=>new CurrencyPairInfo
-                //{
-                //    BuyCourse = x.buy,
-                //    SellCourse = x.sell,
-                //    XCurrency = x.Currency
-                //}).ToList()
+                BankCourseTime = date.Date.Add(time.CourseTime),
+                RequestTime = date,
+                CurrencyPairInfos = time.CurrencyList.Select(x =>
+                {
+                    var buy = x.RateList.First(y => y.Operation == Operation.Buy);
+                    var sell = x.RateList.First(y => y.Operation == Operation.Sell);
+                    return new CurrencyPairInfo
+                    {
+                        BuyCourse = buy.Value,
+                        SellCourse = sell.Value,
+                        XCurrency = buy.Currency
+                    };
+                }).ToList()
             };
         }
 
@@ -106,8 +110,8 @@ namespace Adapters.Clients.Idea
 
     public enum Operation
     {
-        Buy = 0,
-        Sell = 1
+        Buy = 1,
+        Sell = 2
     }
 
 
@@ -131,18 +135,7 @@ namespace Adapters.Clients.Idea
                         var rateList = ((JObject) currency.Value).Properties();
                         return new VigodniyCursResponse.Currency
                         {
-                            RateList = rateList.Select(rate =>
-                            {
-                                var r = (JObject) rate.Value;
-                                return new Rate
-                                {
-                                    Value = r["Value"].Value<float>(),
-                                    Currency = r["Currency"].Value<string>(),
-                                    Operation = (Operation)r["Operation"].Value<int>(),
-                                    Units = r["Units"].Value<int>()
-
-                                };
-                            }).ToList()
+                            RateList = rateList.Select(rate => rate.Value.ToObject<Rate>()).ToList()
                         };
                     }).ToList()
                 }).ToList()
